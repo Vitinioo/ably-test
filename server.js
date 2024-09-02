@@ -117,7 +117,7 @@ realtime.connection.once("connected", () => {
 
    });
 
-   deadPlayerCh.subscribe("dead-notif", (msg) => {
+   deadPlayerCh.subscribe("goal-notif", (msg) => {
         players[msg.data.deadPlayerId].isAlive = false;
         alivePlayers--;
         if(alivePlayers === 0){
