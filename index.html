@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Lacquer&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" type="text/css">
+    <script src="https://cdn.ably.com/lib/ably.min-2.js"></script>
+    <link href="stylesheet.css" rel="stylesheet" type="text/css">
+    <script>
+      async function publishSubscribe() {
+
+        // Connect to Ably with your API key
+        const ably = new Ably.Realtime("hKZexw.ZiOmBg:iIs357nby6O6pv8mw6YYbZoyrQBiXvR0jUtsJCW1Vbo", false)
+        ably.connection.once("connected", () => {
+          console.log("Connected to Ably!")
+        })
+
+        // Create a channel called 'get-started' and register a listener to subscribe to all messages with the name 'first'
+        const channel = ably.channels.get("get-started")
+        await channel.subscribe("first", (message) => {
+          console.log("Message received: " + message.data)
+        });
+
+        // Publish a message with the name 'first' and the contents 'Here is my first message!'
+        await channel.publish("first", "Here is my first message!")
+
+        const tokenRequest = await ably.auth.createTokenRequest({ clientId: 'client@example.com' });
+        console.log(tokenRequest)
+
+        // Close the connection to Ably after a 5 second delay
+        setTimeout(async () => {
+          ably.connection.close();
+          await ably.connection.once("closed", function () {
+            console.log("Closed the connection to Ably.")
+          });
+        }, 5000);
+      }
+
+      publishSubscribe()
+
+    </script>
+  </head>
+
+  <body>
+    <h1>Sendify</h1>
+  </body>
+</html>
